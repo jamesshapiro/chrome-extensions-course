@@ -16,10 +16,11 @@
   "background": {
     "service_worker": "background.js"
   },
-  "permissions": ["contextMenus", "search", "tabs"],
+  "permissions": ["contextMenus", "search", "tabs", "storage", "tts"],
   "content_scripts": [
     {
-      "matches": ["https://www.google.com"],
+      "matches": ["https://*.google.com/*"],
+      "css": ["contentScript.css"],
       "js": ["contentScript.js"]
     }
   ]

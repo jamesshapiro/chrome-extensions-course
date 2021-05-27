@@ -1,15 +1,30 @@
 chrome.runtime.onInstalled.addListener(() => {
+  chrome.storage.local.set({
+    shows: [],
+  });
   chrome.contextMenus.create({
     title: "Test Context Menu",
     id: "contextMenu1",
     contexts: ["page", "selection"],
   });
-  chrome.contextMenus.onClicked.addListener((event) => {
-    console.log(event);
-    chrome.tabs.create({
-      url: `https://www.imdb.com/find?q=${event.selectionText}&ref_=nv_sr_sm`,
-    });
+  chrome.contextMenus.create({
+    title: "Read This Text",
+    id: "contextMenu2",
+    contexts: ["page", "selection"],
   });
 });
 
-console.log("background script running");
+chrome.contextMenus.onClicked.addListener((event) => {
+  if (event.menuItemId === "contextMenu1") {
+    fetch(`http://api.tvmaze.com/search/shows?q=${event.selectionText}`)
+      .then((res) => res.json())
+      .then((data) => {
+        console.log();
+        chrome.storage.local.set({
+          shows: data,
+        });
+      });
+  } else if (event.menuItemId === "contextMenu2") {
+    chrome.tts.speak(event.selectionText);
+  }
+});
